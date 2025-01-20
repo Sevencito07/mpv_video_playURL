@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>video play</title>
+    <style>
+        body {
+
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            background-color: #191b19;
+            place-content:center;
+        }
+        .main-container{
+
+           width:100%;
+           height:100vh;
+        }
+       .container{
+          margin-top:1rem;
+          height:6rem;
+          display:flex;
+          flex-direction:row;
+       }
+       span{
+          font-family:Comic Sans MS, cursive;
+          color:#d5dbd6;
+          font-size:4.5rem
+       }
+       .box{
+          margin-left:2rem;
+          background-color: #193c7a;
+          width: 5rem;
+          height: 100%;
+          border-radius:10px;
+          border:2px solid #282d29;
+       }
+       .box.active{background-color:#cad9fa}
+
+      h2{color:#d5dbd6;}
+      .container-set{
+          height:14rem;
+          margin-top:1.5rem;
+          display:flex;
+          flex-direction:row;
+          place-content:ceneter;
+}
+     .box-on{
+          background-color:#abb9bb ;
+          width: 5rem;
+          height: 5rem;
+          border-radius:50%;
+          border:2px solid #282d29;
+          margin-top:1.7rem;
+
+}
+    .box-on:active{background-color:#001eec}
+    .set-box{
+          margin-left:2rem;
+          background-color: #193c7a;
+          width: 5rem;
+          height: 100%;
+          border-radius:10px;
+          border:2px solid #282d29;
+          display:flex;
+          flex-direction:column;
+          place-content:center;
+          place-items:center;
+}
+    img{width:40px}
+    .image_audio{width:40px; margin:20px;}
+    .end-container{
+          margin-left:2rem;
+          diplay:flex;
+          width:5rem;
+          flex-direction:column;
+          height:100%;
+
+      }
+    .box-zero{
+
+          background-color: #193c7a;
+          width: 5rem;
+          height: 6rem;
+          border-radius:10px;
+          border:2px solid #282d29;
+     }
+    .box-zero.active{background-color:#cad9fa}
+    .set_buttons{display:flex}
+    .reset-button{
+
+          margin-top:3.5rem;
+          background-color:#cad9fa;
+          color:#fbfbff;
+          width:auto;
+          height:4rem;
+          border-radius:10px;
+    }
+
+    #overlay {
+            display: none;
+            position: absolute;
+            top:12rem;
+            padding-top:1rem;
+            background-color: #4782d1;
+            width: 25rem;
+            height: 3rem;
+            border-radius:10px;
+            border:2px solid #282d29;
+            text-align: center;
+            z-index: 5;
+        }
+    .button_plus{
+            width:100%;
+            height:4.7rem;
+            padding-top:2rem;
+    }
+    .button_less{
+            width:100%;
+            height:4.7rem;
+            padding-botton:4rem;
+    }
+    .button_plus:active{background-color:#001c41}
+    .button_less:active{background-color:#001c41}
+    </style>
+ <script>
+
+         function saveValue(value){
+              if(!localStorage.getItem("CH1")){
+               localStorage.setItem("CH1",value)
+             }
+              else{
+               localStorage.setItem("CH2",value)
+              }};
+
+
+     async function handleClick2() {
+        const numberCh = localStorage.getItem("CH1") + localStorage.getItem("CH2");
+         alert('chanel selected : {numberCh} ')
+         try {
+        const response = await fetch('http://192.168.4.52:5000/ch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: numberCh
+        });
+        const data = await response.text();
+        console.log("server:", data);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+
+       setTimeout(() => {
+           localStorage.setItem("CH1","");
+           localStorage.setItem("CH2","");
+      }, 3000);
+
+      }
+
+
+    function resetClick(){
+           alert("resetting chanels number")
+           localStorage.setItem("CH1","");
+           localStorage.setItem("CH2","");
+    }
+
+///////////cast function
+
+async   function castFunction(){
+         const value_url = document.getElementById('valueInput').value;
+         alert("executing video")
+         try {
+        const response = await fetch('http://{ip_server}:5000/url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:   JSON.stringify({url : value_url }),
+       });
+        const data = await response.text();
+        console.log("server :", data);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+
+}
+///////////volumen function
+async   function volumen_plus(){
+      try {
+        const response = await fetch('http://{ip_server}:5000/volumen_up', {
+            method: 'POST',
+       });
+    } catch (error) {
+        console.error("Error:", error);
+    }
+
+}
+
+async   function volumen_less(){
+         try {
+        const response = await fetch('http://{ip_server}:5000/volumen_down', {
+            method: 'POST',
+
+       });
+    } catch (error) {
+        console.error("Error:", error);
+    }
+
+}
+
+
+
+
+
+</script>
+
+
+
+</head>
+<body>
+ <div class="main-container">
+ <div class="container">
+  <button  class="box"  onclick="saveValue(1)"  ><span>1</span></button>
+  <button  class="box" onclick="saveValue(2)"  ><span>2</span></button>
+  <button  class="box" onclick="saveValue(3)"  ><span>3</span></button>
+ </div>
+  <div class="container">
+  <button  class="box"onclick="saveValue(4)" ><span>4</span></button>
+  <button  class="box" onclick="saveValue(5)" ><span>5</span></button>
+  <button  class="box"onclick="saveValue(6)" ><span>6</span></button>
+ </div>
+ <div class="container">
+  <button  class="box"onclick="saveValue(7)"  ><span>7</span></button>
+  <button  class="box"onclick="saveValue(8)"  ><span>8</span></button>
+  <button  class="box"onclick="saveValue(9)"  ><span>9</span></button>
+ </div>
+ <div class="container-set">
+  <div  class="set-box" >
+  <button class="button_plus" onclick="volumen_plus()"></button>
+  <img class="image_audio" src="audio.png"/>
+  <button class="button_less" onclick="volumen_less()"></button>
+
+ </div>
+  <div class="end-container">
+  <button id="active" class="box-zero"onclick="saveValue(0)"  ><span>0</span></button>
+  <button onclick="handleClick2()"  class="box-on" ></button>
+  </div>
+  <div  class="set-box" >
+  <button class="button_plus"></button>
+  <h2>CH</h2>
+  <button class="button_less" ></button>
+  </div>
+ </div>
+ <div class="set_buttons">
+ <button onclick="castDiv()" class="reset-button" ><img src="cast.png" /></button>
+ <button onclick="resetClick()" class="reset-button">reset</button>
+ </div>
+ <div id="overlay" >
+        <input value="test http" type="text" id="valueInput" name="valueInput" placeholder="https://page/video.mp4" required>
+        <button  onclick="castFunction()">send</button>
+
+
+</div>
+ </div>
+<script>
+ const botones = document.querySelectorAll('.box');
+
+    botones.forEach(boton => {
+      boton.addEventListener('click', () => {
+        boton.classList.toggle('active');
+      setTimeout(() => {
+            boton.classList.remove('active');
+      }, 1000)
+      });
+    });
+
+ const buttonZero = document.getElementById('active');
+
+    buttonZero.addEventListener('click', () => {
+
+      buttonZero.classList.toggle('active');
+      setTimeout(() => {
+            buttonZero.classList.remove('active');
+      }, 1000);
+    });
+
+
+///////display div cast
+        function castDiv() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+        }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+   
